@@ -1,0 +1,8 @@
+# /etc/exports
+
+# Usually I only use NFS in a read-only situation and this file is configured
+# based on that assumption (primarily KODI).
+# http://kodi.wiki/view/NFS
+
+/mnt/media/movies       *(ro,sync,no_root_squash)
+/mnt/media/tv           *(ro,sync,no_root_squash)

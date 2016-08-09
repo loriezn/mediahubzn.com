@@ -1,0 +1,73 @@
+---
+- name: ensure os is up to date
+  apt:
+    update_cache: yes
+    upgrade: full
+    cache_valid_time: 300
+
+- name: install packages
+  apt: pkg={{ item }} state=present
+  with_items:
+    - bash-completion
+    - curl
+    - exiftool
+    - fuse
+    - glances
+    - git
+    - htop
+    - iftop
+    - iotop
+    - jq
+    - lynx
+    - mc
+    - ncdu
+    - nmap
+    - openssh-server
+    - python
+    - reptyr
+    - screen
+    - smartmontools
+    - sudo
+    - tmux
+    - tree
+    - wget
+    - xfsprogs
+    - youtube-dl
+  tags:
+    - packages
+
+- name: create /mnt points
+  file:
+    dest: "/mnt/{{ item }}"
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: 0777
+  with_items: "{{ mntpoints }}"
+
+- name: mount disks
+  mount:
+    name: "{{ item.name }}"
+    src: "{{ item.src }}"
+    fstype: "{{ item.fs }}"
+    # change to 'mounted' to auto mount
+    state: present
+  with_items:
+    - { name: /mnt/parity1, src: /dev/disk/by-id/ata-WDC_WD10JPVX-22JC3T0_WD-WX11A54N7645-part1 , fs: ext4}
+    - { name: /mnt/disk1, src: /dev/disk/by-id/ata-WDC_WD2002FAEX-007BA0_WD-WMAY00576083-part1, fs: xfs}
+    - { name: /mnt/disk2, src: /dev/disk/by-id/ata-WDC_WD2002FAEX-007BA0_WD-WMAY02107502-part1, fs: xfs}
+    - { name: /mnt/disk3, src: /dev/disk/by-id/ata-WDC_WD2002FAEX-007BA0_WD-WMAY02837962-part1, fs: xfs}
+    - { name: /mnt/disk4, src: /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0399105-part1, fs: xfs}
+    - { name: /mnt/disk5, src: /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0399096-part1, fs: xfs}
+    - { name: /mnt/disk6, src: /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0229508-part1, fs: xfs}
+    - { name: /mnt/disk7, src: /dev/disk/by-id/ata-WDC_WD2002FAEX-007BA0_WD-WMAY02971799-part1, fs: xfs}
+    - { name: /mnt/disk8, src: /dev/disk/by-id/ata-WDC_WD2001FASS-00U0B0_WD-WMAUR0305866-part1, fs: xfs}
+
+- name: mount mergerfs array
+  mount:
+    name: /mnt/media
+    src: /mnt/disk*
+    opts: direct_io,defaults,allow_other,minfreespace=50G,fsname=mergerfs
+    fstype: fuse.mergerfs
+    # change to 'mounted' to auto mount
+    state: present

@@ -1,0 +1,155 @@
+---
+version: '2'
+services:
+  muximux:
+    image: linuxserver/muximux
+    container_name: muximux
+    volumes:
+      - /opt/appdata/muximux:/config
+    ports:
+      - 192.168.0.15:8000:80
+      - 192.168.0.15:8100:443
+    environment:
+      - PUID=${PUID}
+      - GUID=${GUID}
+      - TZ="Australia/Sydney"
+  glances:
+    image:  nicolargo/glances
+    container_name: glances
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 192.168.0.15:8300:61208
+      - 192.168.0.15:8310:61209
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - GUID=${GUID}
+  couchpotato:
+    image: linuxserver/couchpotato
+    container_name: couchpotato
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/couchpotato:/config
+      - /mnt/downloads/quasar:/downloads/quasar
+      - /mnt/downloads/blackhole:/downloads/blackhole
+      - /mnt/media/movies:/movies
+    ports:
+      - 192.168.0.15:8010:5050
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  sickrage:
+    image: linuxserver/sickrage
+    container_name: sickrage
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/sickrage:/config
+      - /mnt/downloads/quasar:/downloads/quasar
+      - /mnt/downloads/blackhole:/downloads/blackhole
+      - /mnt/media/tv:/tv
+    ports:
+      - 192.168.0.15:8020:8081
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  headphones:
+    image: linuxserver/headphones
+    container_name: headphones
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/headphones:/config
+      - /mnt/downloads/quasar:/downloads/quasar
+      - /mnt/downloads/blackhole:/downloads/blackhole
+      - /mnt/media/tv:/tv
+    ports:
+      - 192.168.0.15:8030:8181
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  musicbrainz:
+    image:  lsiodev/musicbrainz
+    container_name: musicbrainz
+    volumes:
+      - /opt/appdata/musicbrainz:/config
+    ports:
+      - 192.168.0.15:8040:5000
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - BRAINZCODE="P1xjVulSEHCjeqiEkctJ11VhpfERZOIM3tjriwNU"
+      - TZ="Australia/Sydney"
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    volumes:
+      - /opt/appdata/plex:/config
+      - /mnt/storage:/data
+    network_mode: host
+    restart: always
+    environment:
+      - VERSION=plexpass
+      - PUID=${PUID}
+      - PGID=${PGID}
+  plexpy:
+    image: linuxserver/plexpy
+    container_name: plexpy
+    depends_on:
+      - plex
+    volumes:
+      - /opt/appdata/plexpy:/config
+      - /opt/appdata/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
+    ports:
+      - 192.168.0.15:32410:8181
+    links:
+      - plex
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - ADVANCED_GIT_BRANCH=master
+  plexrequests:
+    image: lsiodev/plexrequests
+    container_name: plexrequests
+    depends_on:
+      - plex
+    volumes:
+      - /opt/appdata/plexrequests:/config
+      - /mnt/storage/tv:/tv
+    ports:
+      - 192.168.0.15:32420:3000
+    links:
+      - plex
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  booksonic:
+    image: ironicbadger/booksonic
+    container_name: booksonic
+    ports:
+      - 192.168.0.15:32500:8080
+    volumes:
+      - /opt/appdata/booksonic:/var/booksonic
+      - /mnt/storage/audiobooks:/audiobooks
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  btsync:
+    image: bittorrent/sync
+    container_name: btsync
+    ports:
+      - 192.168.0.15:8090:8888
+      - 192.168.0.15:55555:55555
+    volumes:
+      - /opt/appdata/btsync:/config
+      - /opt/downloads:/sync
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}

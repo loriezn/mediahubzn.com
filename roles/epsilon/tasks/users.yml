@@ -1,0 +1,6 @@
+---
+- name: create user loki
+  user:
+    name: loki
+    state: present
+    groups: "sudo,docker"
