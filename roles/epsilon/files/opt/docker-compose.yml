@@ -63,10 +63,10 @@ services:
       - /opt/appdata/headphones:/config
       - /opt/downloads/blackhole:/downloads/blackhole
       - /opt/downloads/quasar:/downloads/quasar
-      - /mnt/storage/music:/music
+      - /mnt/storage/music/albums:/music/albums
+      - /mnt/storage/music/flac-albums:/music/flac-albums
     ports:
       - 192.168.0.150:8030:8181
-    restart: always
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
