@@ -7,8 +7,8 @@ services:
     volumes:
       - /opt/appdata/muximux:/config
     ports:
-      - 192.168.0.15:8000:80
-      - 192.168.0.15:8100:443
+      - 192.168.0.150:8000:80
+      - 192.168.0.150:8100:443
     environment:
       - PUID=${PUID}
       - GUID=${GUID}
@@ -19,8 +19,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - 192.168.0.15:8300:61208
-      - 192.168.0.15:8310:61209
+      - 192.168.0.150:8300:61208
+      - 192.168.0.150:8310:61209
     restart: always
     environment:
       - PUID=${PUID}
@@ -31,11 +31,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/appdata/couchpotato:/config
-      - /mnt/downloads/quasar:/downloads/quasar
-      - /mnt/downloads/blackhole:/downloads/blackhole
-      - /mnt/media/movies:/movies
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/movies:/movies
     ports:
-      - 192.168.0.15:8010:5050
+      - 192.168.0.150:8010:5050
     restart: always
     environment:
       - PUID=${PUID}
@@ -46,11 +46,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/appdata/sickrage:/config
-      - /mnt/downloads/quasar:/downloads/quasar
-      - /mnt/downloads/blackhole:/downloads/blackhole
-      - /mnt/media/tv:/tv
+      - /opt/downloads/quasar:/downloads/quasar
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /mnt/storage/tv:/tv
     ports:
-      - 192.168.0.15:8020:8081
+      - 192.168.0.150:8020:8081
     restart: always
     environment:
       - PUID=${PUID}
@@ -61,11 +61,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/appdata/headphones:/config
-      - /mnt/downloads/quasar:/downloads/quasar
-      - /mnt/downloads/blackhole:/downloads/blackhole
-      - /mnt/media/tv:/tv
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/music:/music
     ports:
-      - 192.168.0.15:8030:8181
+      - 192.168.0.150:8030:8181
     restart: always
     environment:
       - PUID=${PUID}
@@ -75,8 +75,9 @@ services:
     container_name: musicbrainz
     volumes:
       - /opt/appdata/musicbrainz:/config
+      - /mnt/appdata/musicbrainz:/data
     ports:
-      - 192.168.0.15:8040:5000
+      - 192.168.0.150:8040:5000
     restart: always
     environment:
       - PUID=${PUID}
@@ -88,7 +89,11 @@ services:
     container_name: plex
     volumes:
       - /opt/appdata/plex:/config
-      - /mnt/storage:/data
+      - /mnt/storage/tv:/tv
+      - /mnt/storage/movies:/movies
+      - /mnt/storage/comics:/comics
+      - /mnt/storage/music:/music
+      - /mnt/storage/audiobooks:/audiobooks
     network_mode: host
     restart: always
     environment:
@@ -102,9 +107,15 @@ services:
       - plex
     volumes:
       - /opt/appdata/plexpy:/config
-      - /opt/appdata/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
+      - /opt/appdata/plex/Library/Application\ Support/Plex\ storage\ Server/Logs:/logs:ro
+      - /mnt/storage/tv:/tv
+      - /mnt/storage/movies:/movies
+      - /mnt/storage/comics:/comics
+      - /mnt/storage/music:/music
+      - /mnt/storage/audiobooks:/audiobooks
+
     ports:
-      - 192.168.0.15:32410:8181
+      - 192.168.0.150:32410:8181
     links:
       - plex
     restart: always
@@ -119,9 +130,15 @@ services:
       - plex
     volumes:
       - /opt/appdata/plexrequests:/config
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
       - /mnt/storage/tv:/tv
+      - /mnt/storage/movies:/movies
+      - /mnt/storage/comics:/comics
+      - /mnt/storage/music:/music
+      - /mnt/storage/audiobooks:/audiobooks
     ports:
-      - 192.168.0.15:32420:3000
+      - 192.168.0.150:32420:3000
     links:
       - plex
     restart: always
@@ -132,10 +149,11 @@ services:
     image: ironicbadger/booksonic
     container_name: booksonic
     ports:
-      - 192.168.0.15:32500:8080
+      - 192.168.0.150:32500:8080
     volumes:
       - /opt/appdata/booksonic:/var/booksonic
       - /mnt/storage/audiobooks:/audiobooks
+      - /mnt/storage/music:/music
     restart: always
     environment:
       - PUID=${PUID}
@@ -144,11 +162,45 @@ services:
     image: bittorrent/sync
     container_name: btsync
     ports:
-      - 192.168.0.15:8090:8888
-      - 192.168.0.15:55555:55555
+      - 192.168.0.150:8090:8888
+      - 192.168.0.150:55555:55555
     volumes:
       - /opt/appdata/btsync:/config
-      - /opt/downloads:/sync
+      - /opt/downloads:/sync      
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  mylar:
+    image: linuxserver/mylar
+    container_name: mylar
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/mylar:/config
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/comics:/comics
+    ports:
+      - 192.168.0.150:8050:8090
+    restart: always
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+  maraschino:
+    image: linuxserver/maraschino
+    container_name: maraschino
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/maraschino:/config
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/tv:/tv
+      - /mnt/storage/movies:/movies
+      - /mnt/storage/comics:/comics
+      - /mnt/storage/music:/music
+      - /mnt/storage/audiobooks:/audiobooks
+    ports:
+      - 192.168.0.150:8005:7000
     restart: always
     environment:
       - PUID=${PUID}

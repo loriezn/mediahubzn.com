@@ -4,5 +4,5 @@
 # based on that assumption (primarily KODI).
 # http://kodi.wiki/view/NFS
 
-/mnt/media/movies       *(ro,sync,no_root_squash)
-/mnt/media/tv           *(ro,sync,no_root_squash)
+/mnt/storage/movies       *(ro,sync,no_root_squash)
+/mnt/storage/tv           *(ro,sync,no_root_squash)
