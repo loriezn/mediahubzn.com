@@ -10,9 +10,28 @@ services:
       - 192.168.0.150:8000:80
       - 192.168.0.150:8100:443
     environment:
-      - PUID=${PUID}
-      - GUID=${GUID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
       - TZ="Australia/Sydney"
+  maraschino:
+    image: linuxserver/maraschino
+    container_name: maraschino
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/maraschino:/config
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/tv:/tv
+      - /mnt/storage/movies:/movies
+      - /mnt/storage/comics:/comics
+      - /mnt/storage/music:/music
+      - /mnt/storage/audiobooks:/audiobooks
+    ports:
+      - 192.168.0.150:8005:7000
+    restart: always
+    environment:
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   glances:
     image:  nicolargo/glances
     container_name: glances
@@ -23,8 +42,8 @@ services:
       - 192.168.0.150:8310:61209
     restart: always
     environment:
-      - PUID=${PUID}
-      - GUID=${GUID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   couchpotato:
     image: linuxserver/couchpotato
     container_name: couchpotato
@@ -38,8 +57,8 @@ services:
       - 192.168.0.150:8010:5050
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   sickrage:
     image: linuxserver/sickrage
     container_name: sickrage
@@ -53,8 +72,8 @@ services:
       - 192.168.0.150:8020:8081
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   headphones:
     image: linuxserver/headphones
     container_name: headphones
@@ -63,13 +82,13 @@ services:
       - /opt/appdata/headphones:/config
       - /opt/downloads/blackhole:/downloads/blackhole
       - /opt/downloads/quasar:/downloads/quasar
-      - /mnt/storage/music:/music
+      - /mnt/storage/music/albums:/music/albums
+      - /mnt/storage/music/flac-albums:/music/flac-albums
     ports:
       - 192.168.0.150:8030:8181
-    restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   musicbrainz:
     image:  lsiodev/musicbrainz
     container_name: musicbrainz
@@ -77,13 +96,41 @@ services:
       - /opt/appdata/musicbrainz:/config
       - /mnt/appdata/musicbrainz:/data
     ports:
-      - 192.168.0.150:8040:5000
+      - 192.168.0.150:5000:5000
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
       - BRAINZCODE="P1xjVulSEHCjeqiEkctJ11VhpfERZOIM3tjriwNU"
       - TZ="Australia/Sydney"
+  mylar:
+    image: linuxserver/mylar
+    container_name: mylar
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/appdata/mylar:/config
+      - /opt/downloads/blackhole:/downloads/blackhole
+      - /opt/downloads/quasar:/downloads/quasar
+      - /mnt/storage/comics:/comics
+    ports:
+      - 192.168.0.150:8040:8090
+    restart: always
+    environment:
+      - GUID="${GUID}"
+      - PUID="${PUID}"
+  btsync:
+    image: bittorrent/sync
+    container_name: btsync
+    ports:
+      - 192.168.0.150:8090:8888
+      - 192.168.0.150:55555:55555
+    volumes:
+      - /opt/appdata/btsync:/config
+      - /opt/downloads:/sync
+    restart: always
+    environment:
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   plex:
     image: linuxserver/plex
     container_name: plex
@@ -98,8 +145,8 @@ services:
     restart: always
     environment:
       - VERSION=plexpass
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   plexpy:
     image: linuxserver/plexpy
     container_name: plexpy
@@ -113,15 +160,14 @@ services:
       - /mnt/storage/comics:/comics
       - /mnt/storage/music:/music
       - /mnt/storage/audiobooks:/audiobooks
-
     ports:
       - 192.168.0.150:32410:8181
     links:
       - plex
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
       - ADVANCED_GIT_BRANCH=master
   plexrequests:
     image: lsiodev/plexrequests
@@ -143,8 +189,8 @@ services:
       - plex
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"
   booksonic:
     image: ironicbadger/booksonic
     container_name: booksonic
@@ -156,52 +202,5 @@ services:
       - /mnt/storage/music:/music
     restart: always
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-  btsync:
-    image: bittorrent/sync
-    container_name: btsync
-    ports:
-      - 192.168.0.150:8090:8888
-      - 192.168.0.150:55555:55555
-    volumes:
-      - /opt/appdata/btsync:/config
-      - /opt/downloads:/sync      
-    restart: always
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-  mylar:
-    image: linuxserver/mylar
-    container_name: mylar
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /opt/appdata/mylar:/config
-      - /opt/downloads/blackhole:/downloads/blackhole
-      - /opt/downloads/quasar:/downloads/quasar
-      - /mnt/storage/comics:/comics
-    ports:
-      - 192.168.0.150:8050:8090
-    restart: always
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-  maraschino:
-    image: linuxserver/maraschino
-    container_name: maraschino
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /opt/appdata/maraschino:/config
-      - /opt/downloads/blackhole:/downloads/blackhole
-      - /opt/downloads/quasar:/downloads/quasar
-      - /mnt/storage/tv:/tv
-      - /mnt/storage/movies:/movies
-      - /mnt/storage/comics:/comics
-      - /mnt/storage/music:/music
-      - /mnt/storage/audiobooks:/audiobooks
-    ports:
-      - 192.168.0.150:8005:7000
-    restart: always
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - GUID="${GUID}"
+      - PUID="${PUID}"

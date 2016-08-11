@@ -14,8 +14,8 @@ mntpoints:
 dockeruser: dockeruser
 dockergroup: dockergroup
 
-appdata: /mnt/appdata
-downloaddir: /mnt/downloads
+appdata: /opt/appdata
+downloaddir: /opt/downloads
 dockerlist: /opt/docker.list
 
 snapraidconf: /etc/snapraid.conf
