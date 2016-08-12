@@ -1,4 +1,5 @@
 .DS_Store
 .vagrant
 .vault
-btsync-docker
+./btsync-docker
+
