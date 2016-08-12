@@ -46,7 +46,7 @@
 
 - name: set docker PUID and GUID environment variables for compose
   copy:
-    src: "etc/environment"
+    src: "/etc/environment"
     dest: "/etc/environment"
     owner: root
     group: root
