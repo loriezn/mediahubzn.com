@@ -26,8 +26,8 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/maraschino:/config"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
-      - "/opt/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
       - "/mnt/storage/tv:/tv"
       - "/mnt/storage/movies:/movies"
       - "/mnt/storage/comics:/comics"
@@ -57,8 +57,8 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/couchpotato:/config"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
-      - "/opt/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
       - "/mnt/storage/movies:/movies"
   sickrage:
     container_name: sickrage
@@ -72,8 +72,8 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/sickrage:/config"
-      - "/opt/downloads/quasar:/downloads/quasar"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
       - "/mnt/storage/tv:/tv"
   headphones:
     container_name: headphones
@@ -87,10 +87,9 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/headphones:/config"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
-      - "/opt/downloads/quasar:/downloads/quasar"
-      - "/mnt/storage/music/albums:/music/albums"
-      - "/mnt/storage/music/flac-albums:/music/flac-albums"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/music:/music"
   mylar:
     container_name: mylar
     environment:
@@ -103,15 +102,15 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/mylar:/config"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
-      - "/opt/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
       - "/mnt/storage/comics:/comics"
   btsync:
     container_name: btsync
     environment:
       - USERID=1050
       - GROUPID=1050
-    image: studio2131/btsync-docker
+    image: loriezn/btsync-docker
     ports: 
       - "192.168.0.150:8090:8888"
       - "192.168.0.150:3369:3369"
@@ -120,7 +119,7 @@ services:
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/appdata/btsync:/config"
-      - "/opt/downloads:/sync"
+      - "/mnt/storage/downloads:/sync"
   plex:
     container_name: plex
     environment:
@@ -174,8 +173,8 @@ services:
     restart: always
     volumes:
       - "/opt/appdata/plexrequests:/config"
-      - "/opt/downloads/blackhole:/downloads/blackhole"
-      - "/opt/downloads/quasar:/downloads/quasar"
+      - "/mnt/storage/downloads/blackhole:/downloads/blackhole"
+      - "/mnt/storage/downloads/quasar:/downloads/quasar"
       - "/mnt/storage/tv:/tv"
       - "/mnt/storage/movies:/movies"
       - "/mnt/storage/comics:/comics"
